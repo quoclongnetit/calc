@@ -104,7 +104,7 @@ function calcOneRow({ qty, giaMuaFull, giaBanFull, vatRate, tndnRate, cpqlRate, 
   const laiVayPhanBo = qty > 0 ? laiVayThang / qty : 0;
 
   const lnTruocThueChiec =
-    giaBanChuaVAT - giaMuaChuaVAT - cpqlChiec - hoaHongChiec - laiVayPhanBo;
+  giaBanChuaVAT - giaMuaChuaVAT;
 
   const thueTndnChiec = Math.max(0, lnTruocThueChiec) * tndn;
   const laiRongChiec = lnTruocThueChiec - thueTndnChiec;
@@ -116,7 +116,7 @@ function calcOneRow({ qty, giaMuaFull, giaBanFull, vatRate, tndnRate, cpqlRate, 
   const laiVayTong = laiVayThang; // chi phí chung, không nhân qty
 
   const lnTruocThueTong =
-    doanhThuTong - giaVonTong - cpqlTong - hoaHongTong - laiVayTong;
+  (giaBanChuaVAT - giaMuaChuaVAT) * qty;
 
   const thueTndnTong = Math.max(0, lnTruocThueTong) * tndn;
   const laiRongTong = lnTruocThueTong - thueTndnTong;
