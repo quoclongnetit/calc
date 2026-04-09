@@ -1,7 +1,7 @@
 const DEFAULTS = {
   vatRate: 8,
   tndnRate: 20,
-  cpqlRate: 9,
+  cpqlRate: 1,
   hoaHongRate: 0.3,
   vonVay: 0,
   laiSuatNam: 0,
