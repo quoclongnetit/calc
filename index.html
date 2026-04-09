@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phương Pháp Tính Giá - Quốc Long</title>
+  <meta name="description" content="Phương Pháp Tính Giá - Quốc Long: công cụ tính nhanh VAT + TNDN, batch nhiều dòng, copy kết quả, xuất Excel/PDF." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <div class="eyebrow">Phương Pháp Tính Giá - Quốc Long</div>
+        <h1>Phương Pháp Tính Giá - Quốc Long</h1>
+        <p class="hero-text">
+          Nhập giá FULL VAT, tính theo 1 chiếc và tổng số lượng, lưu dữ liệu tự động,
+          batch nhiều dòng, copy kết quả nhanh, xuất Excel và PDF ngay trên web.
+        </p>
+      </div>
+      <div class="hero-actions">
+        <button id="btnResetQuick" class="btn btn-dark" type="button">Reset nhanh</button>
+        <button id="btnCopyResult" class="btn btn-primary" type="button">Copy kết quả</button>
+        <button id="btnExportExcel" class="btn btn-soft" type="button">Xuất Excel</button>
+        <button id="btnExportPDF" class="btn btn-soft" type="button">Xuất PDF</button>
+      </div>
+    </header>
+
+    <main class="main-grid">
+      <section class="card sticky-card">
+        <div class="section-head">
+          <h2>Thông số đầu vào</h2>
+          <span class="badge">Tự lưu lần nhập trước</span>
+        </div>
+
+        <div class="form-grid">
+          <label class="field">
+            <span>VAT rate (%)</span>
+            <input id="vatRate" type="number" step="0.0001" inputmode="decimal" />
+          </label>
+
+          <label class="field">
+            <span>TNDN rate (%)</span>
+            <input id="tndnRate" type="number" step="0.0001" inputmode="decimal" />
+          </label>
+
+          <label class="field">
+            <span>Chi phí quản lý DN (% doanh thu FULL VAT)</span>
+            <input id="cpqlRate" type="number" step="0.0001" inputmode="decimal" />
+          </label>
+
+          <label class="field">
+            <span>Hoa hồng doanh số (% giá bán FULL VAT)</span>
+            <input id="hoaHongRate" type="number" step="0.0001" inputmode="decimal" />
+          </label>
+
+          <label class="field">
+            <span>Vốn vay</span>
+            <input id="vonVay" type="number" step="1" inputmode="numeric" />
+          </label>
+
+          <label class="field">
+            <span>Lãi suất năm (%)</span>
+            <input id="laiSuatNam" type="number" step="0.0001" inputmode="decimal" />
+          </label>
+
+          <label class="field">
+            <span>Số lượng (Qty)</span>
+            <input id="qty" type="number" step="1" inputmode="numeric" />
+          </label>
+
+          <label class="field">
+            <span>Giá mua (FULL VAT)</span>
+            <input id="giaMuaFull" type="number" step="1" inputmode="numeric" />
+          </label>
+
+          <label class="field">
+            <span>Giá bán (FULL VAT)</span>
+            <input id="giaBanFull" type="number" step="1" inputmode="numeric" />
+          </label>
+        </div>
+
+        <div class="mini-actions">
+          <button id="btnDemo" class="btn btn-soft" type="button">Điền số mẫu</button>
+          <button id="btnClearSaved" class="btn btn-ghost" type="button">Xóa dữ liệu đã lưu</button>
+        </div>
+
+        <div class="note-box">
+          <strong>Ghi chú:</strong>
+          Chi phí quản lý = % × doanh thu FULL VAT.
+          Lãi vay tháng = Vốn vay × Lãi suất năm / 12.
+          Lãi vay là chi phí chung cho cả lô và được phân bổ xuống từng chiếc khi hiển thị chỉ tiêu /chiếc.
+        </div>
+      </section>
+
+      <section class="card" id="reportArea">
+        <div class="section-head">
+          <h2>Kết quả chi tiết</h2>
+          <span id="saveStatus" class="save-status">Đã lưu tự động</span>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="kpi-label">Giá mua chưa VAT / chiếc</div>
+            <div class="kpi-value" id="giaMuaChuaVAT"></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">VAT đầu vào / chiếc</div>
+            <div class="kpi-value" id="vatDauVao"></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Giá bán chưa VAT / chiếc</div>
+            <div class="kpi-value" id="giaBanChuaVAT"></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">VAT đầu ra / chiếc</div>
+            <div class="kpi-value" id="vatDauRa"></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">VAT phải nộp / chiếc</div>
+            <div class="kpi-value" id="vatPhaiNopChiec"></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">LN trước thuế / chiếc</div>
+            <div class="kpi-value" id="lnTruocThueChiec"></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Thuế TNDN / chiếc</div>
+            <div class="kpi-value" id="thueTndnChiec"></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Lãi ròng / chiếc</div>
+            <div class="kpi-value" id="laiRongChiec"></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Chi phí quản lý / chiếc</div>
+            <div class="kpi-value" id="cpqlChiec"></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Hoa hồng DS / chiếc</div>
+            <div class="kpi-value" id="hoaHongChiec"></div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-label">Lãi vay phân bổ / chiếc</div>
+            <div class="kpi-value" id="laiVayChiec"></div>
+          </div>
+          <div class="kpi highlight">
+            <div class="kpi-label">Lãi ròng sau thuế (tổng)</div>
+            <div class="kpi-value" id="laiRongTong"></div>
+          </div>
+        </div>
+
+        <div class="summary-panel">
+          <div class="summary-row"><span>Doanh thu chưa VAT (tổng)</span><strong id="doanhThuTong"></strong></div>
+          <div class="summary-row"><span>Giá vốn chưa VAT (tổng)</span><strong id="giaVonTong"></strong></div>
+          <div class="summary-row"><span>LN trước thuế (tổng)</span><strong id="lnTruocThueTong"></strong></div>
+          <div class="summary-row"><span>Thuế TNDN (tổng)</span><strong id="thueTndnTong"></strong></div>
+          <div class="summary-row"><span>VAT phải nộp (tổng)</span><strong id="vatPhaiNopTong"></strong></div>
+          <div class="summary-row"><span>Lãi vay tháng (chi phí chung)</span><strong id="laiVayTong"></strong></div>
+          <div class="summary-row"><span>Biên lãi trước thuế</span><strong id="grossMargin"></strong></div>
+          <div class="summary-row"><span>Biên lãi ròng</span><strong id="netMargin"></strong></div>
+        </div>
+      </section>
+    </main>
+
+    <section class="card batch-card">
+      <div class="section-head">
+        <h2>Batch nhiều dòng</h2>
+        <div class="batch-actions">
+          <button id="btnAddRow" class="btn btn-primary" type="button">+ Thêm dòng</button>
+          <button id="btnClearBatch" class="btn btn-ghost" type="button">Xóa toàn bộ batch</button>
+        </div>
+      </div>
+
+      <p class="batch-help">
+        Nhập nhiều dòng giá mua/giá bán để tính hàng loạt. Mỗi dòng dùng chung bộ tỷ lệ VAT, TNDN,
+        CPQL, hoa hồng, vốn vay và lãi suất năm ở khối bên trái.
+      </p>
+
+      <div class="table-wrap">
+        <table class="batch-table">
+          <thead>
+            <tr>
+              <th>Mã / Ghi chú</th>
+              <th>Số lượng</th>
+              <th>Giá mua FULL VAT</th>
+              <th>Giá bán FULL VAT</th>
+              <th>Lãi ròng tổng</th>
+              <th>VAT phải nộp tổng</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="batchBody"></tbody>
+        </table>
+      </div>
+
+      <div class="batch-summary">
+        <div class="batch-total"><span>Tổng doanh thu chưa VAT</span><strong id="batchDoanhThu"></strong></div>
+        <div class="batch-total"><span>Tổng LN trước thuế</span><strong id="batchLNTT"></strong></div>
+        <div class="batch-total"><span>Tổng thuế TNDN</span><strong id="batchTNDN"></strong></div>
+        <div class="batch-total"><span>Tổng lãi ròng</span><strong id="batchLaiRong"></strong></div>
+        <div class="batch-total"><span>Tổng VAT phải nộp</span><strong id="batchVAT"></strong></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
