@@ -238,7 +238,7 @@ function copyMainResult() {
     `Lãi vay tháng (chi phí chung): ${formatNumber(currentMainResult.laiVayTong)}`,
     `LN trước thuế (tổng): ${formatNumber(currentMainResult.lnTruocThueTong)}`,
     `Thuế TNDN (tổng): ${formatNumber(currentMainResult.thueTndnTong)}`,
-    `Lãi ròng (tổng): ${formatNumber(currentMainResult.laiRongTong)}`,
+    `Lãi gộp sau thuế (tổng): ${formatNumber(currentMainResult.laiRongTong)}`,
     `VAT phải nộp (tổng): ${formatNumber(currentMainResult.vatPhaiNopTong)}`,
     `Biên lãi trước thuế: ${formatPercent(currentMainResult.grossMargin)}`,
     `Biên lãi ròng: ${formatPercent(currentMainResult.netMargin)}`,
@@ -422,7 +422,7 @@ function buildExportRows() {
       "Doanh thu chưa VAT (tổng)": Math.round(result.doanhThuTong),
       "LN trước thuế (tổng)": Math.round(result.lnTruocThueTong),
       "Thuế TNDN (tổng)": Math.round(result.thueTndnTong),
-      "Lãi ròng (tổng)": Math.round(result.laiRongTong),
+      "Lãi gộp sau thuế (tổng)": Math.round(result.laiRongTong),
       "VAT phải nộp (tổng)": Math.round(result.vatPhaiNopTong),
     };
   });
@@ -529,7 +529,7 @@ function exportPDF() {
       y = 40;
     }
     pdf.text(
-      `${idx + 1}. ${row["Mã / Ghi chú"]} | Qty ${formatNumber(row["Số lượng"])} | Lai rong ${formatNumber(row["Lãi ròng (tổng)"])} | VAT ${formatNumber(row["VAT phải nộp (tổng)"])}`,
+      `${idx + 1}. ${row["Mã / Ghi chú"]} | Qty ${formatNumber(row["Số lượng"])} | Lai rong ${formatNumber(row["Lãi gộp sau thuế (tổng)"])} | VAT ${formatNumber(row["VAT phải nộp (tổng)"])}`,
       40,
       y
     );
