@@ -5,9 +5,9 @@ const DEFAULTS = {
   hoaHongRate: 0.3,
   vonVay: 0,
   laiSuatNam: 0,
-  qty: 100,
-  giaMuaFull: 690000,
-  giaBanFull: 700000,
+  qty: 1,
+  giaMuaFull: 300000,
+  giaBanFull: 350000,
 };
 
 const STORAGE_KEY = "autotax_v2_quoclong_final_inputs";
